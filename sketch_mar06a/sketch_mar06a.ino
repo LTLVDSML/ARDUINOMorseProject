@@ -1,12 +1,17 @@
 // Projet de programme de traduction du code morse
 
+// Variables intervalles
+int delaiEntreAcquisition = 300;
+byte seuilPressionLong    = 2;
+byte seuilFinAcquisition  = 10;
+
 // Variables fonctionnement
 byte compteurPression = 0;
-byte compteurLeve = 0;
-byte caractere[5] = {0};
-byte idxPression = 0;
-byte reference[5] = {0};
-byte comparaison = 0;
+byte compteurLeve     = 0;
+byte caractere[5]     = {0};
+byte idxPression      = 0;
+byte reference[5]     = {0};
+byte comparaison      = 0;
 
 void setup() {
   // Frequence de lecture pour le debug
@@ -19,7 +24,7 @@ void setup() {
 
 void loop() {
   // Intervalle de temps entre chaque acquisition
-  delay(300);
+  delay(delaiEntreAcquisition);
   byte bouton = analogRead(A0);
   //Serial.println(bouton);
 
@@ -36,7 +41,7 @@ void loop() {
   // bouton leve apres appui
   else if(compteurPression > 0) {
     // appui long
-    if (compteurPression > 2){
+    if (compteurPression > seuilPressionLong){
       caractere[idxPression] = 2;
       idxPression = idxPression+1;
     }
@@ -58,19 +63,17 @@ void loop() {
 
   // Affichage //////////////////////////////////////
   // depouillement
-  if (compteurLeve > 10 || caractere[4] != 0){
+  if ((compteurLeve > seuilFinAcquisition || caractere[4]) != 0 && caractere[0] != 0){
     depouillement(caractere);
     
   // Remise a 0
-    for (byte i = 0; i < 4; i++) { 
+    for (byte i = 0; i < 5; i++) { 
       caractere[i] = 0;
     }
     compteurPression = 0;
     compteurLeve = 0;
     idxPression = 0;
-  
   }
- 
 }
 
 // FONCTIONS //////////////////////////////////////////
